@@ -17,6 +17,10 @@ requests
 
 # Frontend
 streamlit
+streamlit
+requests
+pandas
+
 
 # Automated pipeline
 mlflow

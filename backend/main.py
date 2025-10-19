@@ -1,4 +1,3 @@
-# main.py
 
 import os
 import joblib
@@ -7,9 +6,6 @@ from pydantic import BaseModel
 from typing import Optional
 import pandas as pd
 
-# -----------------------------
-# 1️⃣ Define input schema
-# -----------------------------
 class HouseFeatures(BaseModel):
     total_sqft: float
     bhk: int
@@ -19,18 +15,14 @@ class HouseFeatures(BaseModel):
     
     # Add more fields if your dataset has them
 
-# -----------------------------
-# 2️⃣ Initialize FastAPI app
-# -----------------------------
+
 app = FastAPI(
     title="Ahmedabad House Price Predictor",
     version="1.0",
     description="Predict house prices in Ahmedabad using a trained XGBoost model"
 )
 
-# -----------------------------
-# 3️⃣ Root endpoint
-# -----------------------------
+
 @app.get("/")
 def root():
     return {
@@ -38,9 +30,7 @@ def root():
         "endpoints": ["/predict", "/health"]
     }
 
-# -----------------------------
-# 4️⃣ Load trained pipeline
-# -----------------------------
+
 MODEL_PATH = os.path.join(os.getcwd(), "models", "house_price_pipeline_prefect.pkl")
 
 if not os.path.exists(MODEL_PATH):
@@ -49,16 +39,12 @@ if not os.path.exists(MODEL_PATH):
 pipeline = joblib.load(MODEL_PATH)
 print("✅ Pipeline loaded successfully!")
 
-# -----------------------------
-# 5️⃣ Health check endpoint
-# -----------------------------
+
 @app.get("/health")
 def health_check():
     return {"status": "OK", "message": "API is running"}
 
-# -----------------------------
-# 6️⃣ Prediction endpoint
-# -----------------------------
+
 @app.post("/predict")
 def predict_price(features: HouseFeatures):
     try:

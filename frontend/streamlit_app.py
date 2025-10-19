@@ -1,11 +1,8 @@
-# app.py
+
 
 import streamlit as st
 import requests
 
-# -----------------------------
-# 1️⃣ Page config
-# -----------------------------
 st.set_page_config(
     page_title="Ahmedabad House Price Predictor",
     page_icon="🏠",
@@ -15,9 +12,7 @@ st.set_page_config(
 st.title("🏠 Ahmedabad House Price Predictor")
 st.write("Predict house prices in Ahmedabad using a trained XGBoost model.")
 
-# -----------------------------
-# 2️⃣ Input form
-# -----------------------------
+
 with st.form(key="house_form"):
     total_sqft = st.number_input("Total Square Feet", min_value=100, max_value=10000, value=1200)
     bhk = st.selectbox("BHK", options=[1, 2, 3, 4, 5], index=2)
@@ -28,9 +23,7 @@ with st.form(key="house_form"):
     submit_button = st.form_submit_button("Predict Price")
 
 
-# -----------------------------
-# 3️⃣ Send data to FastAPI
-# -----------------------------
+
 API_URL = "http://127.0.0.1:8000/predict"  # Update if hosted elsewhere
 
 if submit_button:

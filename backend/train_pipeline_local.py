@@ -1,4 +1,4 @@
-# train_pipeline_prefect.py
+
 
 import os
 import pandas as pd
@@ -21,9 +21,6 @@ from prefect import flow, task
 from prefect.tasks import task_input_hash
 from datetime import timedelta
 
-# -----------------------------
-# 1️⃣ Task: Load Data
-# -----------------------------
 @task(retries=2, retry_delay_seconds=5, cache_key_fn=task_input_hash, cache_expiration=timedelta(days=1))
 def load_data(csv_path: str):
     if not os.path.exists(csv_path):
@@ -32,9 +29,7 @@ def load_data(csv_path: str):
     print(f"✅ Data loaded. Shape: {df.shape}")
     return df
 
-# -----------------------------
-# 2️⃣ Task: Perform EDA
-# -----------------------------
+
 @task
 def perform_eda(df: pd.DataFrame):
     avg_price_location = df.groupby("location")["price"].mean().sort_values(ascending=False).head(10)
@@ -50,9 +45,7 @@ def perform_eda(df: pd.DataFrame):
     print(f"✅ EDA plot saved as '{eda_path}'")
     return eda_path
 
-# -----------------------------
-# 3️⃣ Task: Preprocessing + Model Pipeline
-# -----------------------------
+
 @task
 def build_pipeline(df: pd.DataFrame, target: str = "price"):
     X = df.drop(columns=[target])
@@ -86,9 +79,7 @@ def build_pipeline(df: pd.DataFrame, target: str = "price"):
 
     return pipeline, X, y, numerical_cols, categorical_cols
 
-# -----------------------------
-# 4️⃣ Task: Train & Evaluate Model
-# -----------------------------
+
 @task
 def train_evaluate(pipeline, X, y, numerical_cols, categorical_cols):
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
@@ -127,9 +118,7 @@ def train_evaluate(pipeline, X, y, numerical_cols, categorical_cols):
 
     return rmse, fi_csv, output_path
 
-# -----------------------------
-# 5️⃣ Prefect Flow
-# -----------------------------
+
 @flow(name="Ahmedabad_House_Price_Flow")
 def main_flow():
     data_path = os.path.join(os.getcwd(), "data", "ahmedabad_cleaned.csv")
